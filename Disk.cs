@@ -19,8 +19,13 @@ namespace Hak2021v2._0
         {
         }
         public void New(string path, int capacity)
-        { 
-            FileInfo disk = new FileInfo(path);
+        {
+            using (FileStream f = File.Create(path))
+            {
+                byte[] b = { (byte)'\0' };
+                f.Write(b, 0, 1);
+            }
+            this.path = path;
             pages = new Page[capacity];
             pointer = 0;
         }
@@ -43,39 +48,41 @@ namespace Hak2021v2._0
             //
         }
 
-        ulong Set(byte[] data)
+        public ulong Set(byte[] data)
         {
             using (BinaryWriter bw = new BinaryWriter(File.Open(path, FileMode.Open)))
             {
                 bw.Write(data.Length);
                 bw.Write(data);
             }
-            return pointer++;
+            pointer += (ulong)data.Length;
+            return pointer;
         }
-        void Return()
+        public void Return()
         {
             pointer = 0;
         }
-        Page.Note Get(ulong id)
+        public Page.Note Get(ulong id)
         {
-            Page.Note note = new Page.Note;
+            Page.Note note = new Page.Note();
             using (BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open)))
             {
-                for (ulong i = 0; i < id; ++id) br.ReadByte();
+                for (ulong i = id; i < (ulong)(capacity * pages.Length); ++id) br.ReadByte();
                 int size = br.ReadInt32();
                 note.data = new byte[size];
-                for (ulong i = 0; i < id; ++id) note.data[i] = br.ReadByte();
+                // !!!!!!!!!!
+                for (ulong i = id + 4; i < (ulong)(capacity * pages.Length); ++id) note.data[i] = br.ReadByte();
             }
             return note;
         }
-        void Update(ulong id, byte[] array)
+        public void Update(ulong id, byte[] array)
         {
             Page.Note note = new Page.Note();
             using (BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open)))
             {
                 for (ulong i = 0; i < id; ++id) br.ReadByte();
                 int size = br.ReadInt32();
-                if (array.Length < size) return;
+                if (size < array.Length) return;
                 using (BinaryWriter bw = new BinaryWriter(br.BaseStream))
                 {
                     bw.Write(array);

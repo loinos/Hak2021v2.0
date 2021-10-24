@@ -12,16 +12,16 @@ namespace Hak2021v2._0
         {
             public byte[] data;
         }
-        Note[] notes;
+        public Note[] notes;
         int pointer;
         string hash;
-        Page(int count)
+        public Page(int count)
         {
             notes = new Note[count];
             pointer = 0;
         }
-        
-        void Update()
+
+        public void Update()
         {
 
         }
