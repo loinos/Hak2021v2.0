@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +11,14 @@ namespace Hak2021v2._0
 {
     class Program
     {
-        public byte[] bitArrayConvertor(BitArray input_bits)
+        public static string generateControllsumForList(byte[] list)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] checkSum = md5.ComputeHash(list);
+            string result = BitConverter.ToString(checkSum).Replace("-", String.Empty);
+            return result;
+        }
+        public static byte[] bitArrayConvertor(BitArray input_bits)
         {
             BitArray a = new BitArray(input_bits.Length + (input_bits.Length & 8));
             for (int i = 0; i < input_bits.Length; i++)
@@ -20,7 +29,7 @@ namespace Hak2021v2._0
             a.CopyTo(bytes, 0);
             return bytes;
         }
-        public byte[] generateXOR(byte[] list1,byte[] list2)
+        public static byte[] generateXOR(byte[] list1,byte[] list2)
         {
             BitArray list1_bits = new BitArray(list1);
             BitArray list2_bits = new BitArray(list2);
@@ -32,7 +41,7 @@ namespace Hak2021v2._0
             }
             return bitArrayConvertor(ans_bits);
         }
-        public byte[] recovery (byte[]duollist,byte[] xorlist)
+        public static byte[] recovery (byte[]duollist,byte[] xorlist)
         {
             BitArray duollist_bits = new BitArray(duollist);
             BitArray xor_bits = new BitArray(xorlist);
@@ -50,9 +59,11 @@ namespace Hak2021v2._0
             }
             return bitArrayConvertor(ans_bits);
         }
+
         static void Main(string[] args)
         {
-
+            byte[] byt = new byte[] { 12, 8, 7, 111 };
+            Console.WriteLine(generateControllsumForList(byt));
         }
     }
 }
