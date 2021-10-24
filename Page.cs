@@ -10,18 +10,24 @@ namespace Hak2021v2._0
     {
         public struct Note
         {
-            int m_size;
-            byte[] data;
+            public byte[] data;
         }
         Note[] notes;
+        int pointer;
         string hash;
         Page(int count)
         {
             notes = new Note[count];
+            pointer = 0;
         }
+        
         void Update()
         {
 
+        }
+        public Note GetLast()
+        {
+            return notes[pointer--];
         }
     }
 }

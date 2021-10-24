@@ -12,7 +12,7 @@ namespace Hak2021v2._0
         string path;
 
         int capacity;
-        int pointer;
+        ulong pointer;
         Page[] pages;
 
         public Disk()
@@ -38,21 +38,49 @@ namespace Hak2021v2._0
             }
         }
         */
+        public void Initialize()
+        {
+            //
+        }
 
         ulong Set(byte[] data)
         {
             using (BinaryWriter bw = new BinaryWriter(File.Open(path, FileMode.Open)))
             {
-                
+                bw.Write(data.Length);
+                bw.Write(data);
             }
+            return pointer++;
         }
-        Page.Note Get()
+        void Return()
         {
-
+            pointer = 0;
         }
-        void Update()
+        Page.Note Get(ulong id)
         {
-
+            Page.Note note = new Page.Note;
+            using (BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open)))
+            {
+                for (ulong i = 0; i < id; ++id) br.ReadByte();
+                int size = br.ReadInt32();
+                note.data = new byte[size];
+                for (ulong i = 0; i < id; ++id) note.data[i] = br.ReadByte();
+            }
+            return note;
+        }
+        void Update(ulong id, byte[] array)
+        {
+            Page.Note note = new Page.Note;
+            using (BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open)))
+            {
+                for (ulong i = 0; i < id; ++id) br.ReadByte();
+                int size = br.ReadInt32();
+                if (array.Length < size) return;
+                using (BinaryWriter bw = new BinaryWriter(br.BaseStream))
+                {
+                    bw.Write(array);
+                }
+            }
         }
     }
 }
