@@ -70,7 +70,7 @@ namespace Hak2021v2._0
         }
         void Update(ulong id, byte[] array)
         {
-            Page.Note note = new Page.Note;
+            Page.Note note = new Page.Note();
             using (BinaryReader br = new BinaryReader(File.Open(path, FileMode.Open)))
             {
                 for (ulong i = 0; i < id; ++id) br.ReadByte();
