@@ -32,6 +32,24 @@ namespace Hak2021v2._0
             }
             return bitArrayConvertor(ans_bits);
         }
+        public byte[] recovery (byte[]duollist,byte[] xorlist)
+        {
+            BitArray duollist_bits = new BitArray(duollist);
+            BitArray xor_bits = new BitArray(xorlist);
+            BitArray ans_bits = new BitArray(xor_bits.Length);
+            for(int i =0; i< ans_bits.Length; i++)
+            {
+                if (xor_bits[i])
+                {
+                    ans_bits[i] = !duollist_bits[i];
+                }
+                else
+                {
+                    ans_bits[i] = duollist_bits[i];
+                }
+            }
+            return bitArrayConvertor(ans_bits);
+        }
         static void Main(string[] args)
         {
 
